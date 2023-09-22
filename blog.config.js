@@ -1,10 +1,10 @@
 const BLOG = {
-  title: 'Notionic',
+  title: 'Moon Base',
   author: 'William King',
   email: '2968473124@qq.com',
   link: 'https://williamk7.cn.eu.org',
-  newsletter: 'Notionic Weekly',
-  description: 'A static blog build on top of Notion and Next.js',
+  newsletter: 'Moon Base Weekly',
+  description: 'William King',
   lang: 'zh-CN', // ['en-US', 'zh-CN', 'zh-HK', 'zh-TW', 'ja-JP', 'es-ES']
   timezone: 'Asia/Shanghai', // See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for all options.
   appearance: 'auto', // ['light', 'dark', 'auto'],
@@ -16,14 +16,14 @@ const BLOG = {
   postsPerPage: 10,
   sortByDate: true,
   pagesShow: {
-    newsletter: true,
+    newsletter: false,
     notes: false,
     projects: true,
     contact: true,
     books: true,
     friends: true
   },
-  showWeChatPay: true,
+  showWeChatPay: false,
   previewImagesEnabled: true,
   autoCollapsedNavBar: false, // The automatically collapsed navigation bar
   ogImageGenerateHost: 'og-zl.vercel.app', // The link to generate OG image, don't end with a slash
@@ -34,7 +34,7 @@ const BLOG = {
     telegram: 'https://t.me/WilliamK7'
   },
   seo: {
-    keywords: ['Notionic', 'William King', 'Blog'],
+    keywords: ['Notionic', 'William King', 'Blog', 'WilliamK7'],
     googleSiteVerification: '' // Remove the value or replace it with your own google site verification code
   },
   notionPageId: process.env.NOTION_PAGE_ID, // DO NOT CHANGE THIS! Edit .env file!
@@ -45,7 +45,7 @@ const BLOG = {
   telegramChatId: '5558125873', // The chat id of your Telegram bot
   telegramChannelUrl: 'https://t.me/MoonBase_WK', // The link of your Telegram channel
   telegramChannelName: 'Moon Base', // The name of your Telegram channel
-  craftConfigShareUrl: 'https://www.craft.do/s/kQtcWqkv98cHhB', // The link to share your craft config
+  craftConfigShareUrl: 'https://www.craft.me/s/QmHfAbJYCerlwA', // The link to share your craft config
   analytics: {
     provider: '', // Currently we support Google Analytics, Ackee, Umami and Cloudflare Insights, please fill with 'ga' or 'ackee' or 'umami' or 'cf', leave it empty to disable it.
     ackeeConfig: {
