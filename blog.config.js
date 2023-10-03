@@ -4,7 +4,7 @@ const BLOG = {
   email: '2968473124@qq.com',
   link: 'https://williamk7.cn.eu.org',
   newsletter: 'Moon Base Weekly',
-  description: '',
+  description: ' William King',
   lang: 'zh-CN', // ['en-US', 'zh-CN', 'zh-HK', 'zh-TW', 'ja-JP', 'es-ES']
   timezone: 'Asia/Shanghai', // See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for all options.
   appearance: 'auto', // ['light', 'dark', 'auto'],
