@@ -13,8 +13,10 @@ export default function TableOfContents ({ blockMap, frontMatter, pageTitle, sho
     page = blockMap.block[collectionId].value
   } else {
     collectionId = Object.keys(blockMap.collection)[0]
-    page = Object.values(blockMap.block).find(block => block.value.parent_id === collectionId).value
+    const found = Object.values(blockMap.block).find(block => block.value && block.value.parent_id === collectionId)
+    page = found ? found.value : null
   }
+  if (!page) return null
   const nodes = getPageTableOfContents(page, blockMap)
   if (!nodes.length || !showScrollElement) return null
 
