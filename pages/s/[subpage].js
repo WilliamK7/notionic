@@ -72,12 +72,14 @@ export async function getStaticProps({ params: { subpage } }) {
     const id = idToUuid(subpage)
 
     const breadcrumbs = getPageBreadcrumbs(blockMap, id)
-    post = posts.find((t) => t.id === breadcrumbs[0].block.id)
+    // breadcrumbs is ordered root→leaf (last element = active subpage)
+    const activeCrumb = breadcrumbs.at(-1)
+    post = posts.find((t) => t.id === activeCrumb?.block.id)
     // When the page is not in the notion database, manually initialize the post
     if (!post) {
       post = {
         type: ['Page'],
-        title: breadcrumbs[0].title
+        title: activeCrumb?.title
       }
     }
     // console.log("debug: ", breadcrumbs, post)
