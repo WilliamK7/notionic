@@ -95,6 +95,14 @@ Your content here…
 
 Markdown posts appear alongside Notion posts in the home feed, search, and tag pages.
 
+## Subpage Route Fix (`/s/<slug>`)
+
+`pages/s/[subpage].js` was returning blank/404 content due to two bugs:
+
+1. **Breadcrumb index**: `notion-utils` `getPageBreadcrumbs` returns breadcrumbs in root→leaf order.  The old code used `breadcrumbs[0]` (root) as the active page title.  Fixed to use `breadcrumbs.at(-1)`.
+
+2. **`pageAllowed` space-ID mismatch**: The Notion API now returns `block.spaceId` (camelCase) instead of the old `block.value.space_id`.  The `NOTION_SPACES_ID` secret was configured with an old value that no longer matches.  Fixed by fetching the blog root page on the first subpage request, extracting its real `spaceId`, caching it module-level, and comparing the subpage's `block.spaceId` against that cached value.  This is robust regardless of what value `NOTION_SPACES_ID` is set to.
+
 ## Runtime Bug Fixes (applied during Replit migration)
 
 - **`globals.css` CSS `@import` ordering**: Moved `@import` statements before `@tailwind` directives to fix PostCSS error.
