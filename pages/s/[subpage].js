@@ -74,9 +74,20 @@ export async function getStaticProps({ params: { subpage } }) {
     const breadcrumbs = getPageBreadcrumbs(blockMap, id)
     // breadcrumbs is ordered root→leaf (last element = active subpage)
     const activeCrumb = breadcrumbs.at(-1)
-    post = posts.find((t) => t.id === activeCrumb?.block.id)
-    // When the page is not in the notion database, manually initialize the post
-    if (!post) {
+
+    // Walk leaf→root to find the nearest breadcrumb that matches a known post
+    // (handles both direct subpages and deeply nested pages)
+    let ancestorPost = null
+    for (let i = breadcrumbs.length - 1; i >= 0; i--) {
+      ancestorPost = posts.find((t) => t.id === breadcrumbs[i].block.id)
+      if (ancestorPost) break
+    }
+
+    if (ancestorPost) {
+      // Inherit parent post metadata but use the active subpage's own title
+      post = { ...ancestorPost, title: activeCrumb?.title }
+    } else {
+      // Page is not in the notion database at all — create a minimal post object
       post = {
         type: ['Page'],
         title: activeCrumb?.title
