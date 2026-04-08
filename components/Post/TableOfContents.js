@@ -7,16 +7,43 @@ import BLOG from '@/blog.config'
 export default function TableOfContents ({ blockMap, frontMatter, pageTitle, showScrollElement }) {
   if (!blockMap) return null
 
-  let collectionId, page
-  if (pageTitle) {
-    collectionId = Object.keys(blockMap.block)[0]
-    page = blockMap.block[collectionId].value
-  } else {
-    collectionId = Object.keys(blockMap.collection)[0]
-    const found = Object.values(blockMap.block).find(block => block.value && block.value.parent_id === collectionId)
-    page = found ? found.value : null
+  const normalizeId = (id = '') => id.replaceAll('-', '')
+  const unwrapBlockValue = (block) => block?.value?.value ?? null
+  const getBlockValueById = (id) => {
+    if (!id) return null
+    return unwrapBlockValue(
+      blockMap?.block?.[id] ??
+      blockMap?.block?.[normalizeId(id)]
+    )
   }
+  const blockValues = Object.values(blockMap.block ?? {})
+    .map(unwrapBlockValue)
+    .filter(Boolean)
+
+  let page
+  if (pageTitle) {
+    const firstBlockId = Object.keys(blockMap.block ?? {})[0]
+    page = getBlockValueById(firstBlockId)
+  } else {
+    const collectionIds = new Set(
+      Object.keys(blockMap.collection ?? {}).map(normalizeId)
+    )
+
+    page = blockValues.find(block =>
+      block?.parent_id &&
+      collectionIds.has(normalizeId(block.parent_id))
+    )
+  }
+
+  // Fallback to the first page-like block when parent linkage differs.
+  if (!page) {
+    page =
+      blockValues.find(block => block?.type === 'page') ??
+      blockValues[0]
+  }
+
   if (!page) return null
+
   const nodes = getPageTableOfContents(page, blockMap)
   if (!nodes.length || !showScrollElement) return null
 
@@ -26,7 +53,7 @@ export default function TableOfContents ({ blockMap, frontMatter, pageTitle, sho
    */
   const getHeaderLevel = (node) => {
     // Get the type information of the corresponding block through blockMap
-    const block = blockMap?.block?.[node.id]?.value
+    const block = getBlockValueById(node.id)
     if (block?.type === 'header') return 1
     if (block?.type === 'sub_header') return 2
     if (block?.type === 'sub_sub_header') return 3

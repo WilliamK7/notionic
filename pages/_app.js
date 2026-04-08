@@ -23,7 +23,7 @@ if (typeof console !== 'undefined') {
 // import 'prismjs/themes/prism-tomorrow.min.css' // prism-okaidia.min.css
 import 'react-notion-x/src/styles.css'
 import 'katex/dist/katex.min.css'
-import 'highlight.js/styles/github.css'
+// import 'highlight.js/styles/github.css'
 import '@/styles/fuma-comment.css'
 import '@/styles/globals.css'
 import '@/styles/notion.css'
