@@ -17,7 +17,13 @@ const Post = ({ post, blockMap, content }) => {
     return <NotFound statusCode={404} />
   }
   return (
-    <Layout blockMap={blockMap} content={content} frontMatter={post} fullWidth={post.fullWidth} />
+    <Layout
+      blockMap={blockMap}
+      content={content}
+      frontMatter={post}
+      fullWidth={post.fullWidth}
+      pageId={post.id}
+    />
   )
 }
 

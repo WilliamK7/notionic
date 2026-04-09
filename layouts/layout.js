@@ -8,7 +8,7 @@ import Aside from '@/components/Post/Aside'
 import Comments from '@/components/Post/Comments'
 import PostFooter from '@/components/Post/PostFooter'
 
-const Layout = ({ blockMap, content, frontMatter, fullWidth = false, subPage = false }) => {
+const Layout = ({ blockMap, content, frontMatter, fullWidth = false, subPage = false, pageId }) => {
   const [showSubPageTitle, setShowSubPageTitle] = useState(false)
 
   const pageTitle = blockMap ? getPageTitle(blockMap) : null
@@ -40,6 +40,7 @@ const Layout = ({ blockMap, content, frontMatter, fullWidth = false, subPage = f
           <Aside
             frontMatter={frontMatter}
             blockMap={blockMap}
+            pageId={pageId}
             pageTitle={showSubPageTitle ? pageTitle : null}
           />
         </motion.div>

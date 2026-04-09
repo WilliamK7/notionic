@@ -64,7 +64,7 @@ const NavBar = () => {
     }
   ]
   return (
-    <div className='flex nav-bar-pill backdrop-blur-sm md:p-1 bg-gray-100/40 dark:bg-gray-800/40 rounded-lg'>
+    <div className='flex nav-bar-pill backdrop-blur-sm md:p-1 bg-gray-100/40 dark:bg-gray-800/40 rounded-xl'>
       {/* Desktop Menu */}
       <ul className='hidden md:flex md:gap-1'>
         {links.map(
@@ -145,19 +145,31 @@ const Header = ({ navBarTitle, fullWidth }) => {
   useEffect(() => {
     const sentinelEl = sentinelRef.current
     const observer = new window.IntersectionObserver(handler)
-    observer.observe(sentinelEl)
+    if (sentinelEl) observer.observe(sentinelEl)
 
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 400) {
-        setShowTitle(true)
-      } else {
-        setShowTitle(false)
+    const readPastThreshold = () => window.pageYOffset > 400
+    let lastPast = readPastThreshold()
+    setShowTitle(lastPast)
+    let raf = 0
+    const flush = () => {
+      raf = 0
+      const next = readPastThreshold()
+      if (next !== lastPast) {
+        lastPast = next
+        setShowTitle(next)
       }
-    })
-    return () => {
-      sentinelEl && observer.unobserve(sentinelEl)
     }
-  }, [handler, sentinelRef])
+    const onScroll = () => {
+      if (raf) return
+      raf = window.requestAnimationFrame(flush)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      if (raf) window.cancelAnimationFrame(raf)
+    }
+  }, [handler])
   return (
     <>
       <div className='observer-element h-4 md:h-12' ref={sentinelRef}></div>

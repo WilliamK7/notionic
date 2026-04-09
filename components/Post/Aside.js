@@ -8,18 +8,32 @@ import HandThumbUpIcon from '@heroicons/react/24/outline/HandThumbUpIcon'
 import ChevronLeftIcon from '@heroicons/react/24/outline/ChevronLeftIcon'
 import ArrowUpIcon from '@heroicons/react/24/outline/ArrowUpIcon'
 
-const Aside = ({ pageTitle, blockMap, frontMatter }) => {
+const Aside = ({ pageId, pageTitle, blockMap, frontMatter }) => {
   const [showPay, setShowPay] = useState(false)
   const [showScrollElement, setShowScrollElement] = useState(false)
 
   useEffect(() => {
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 400) {
-        setShowScrollElement(true)
-      } else {
-        setShowScrollElement(false)
+    const readPastThreshold = () => window.pageYOffset > 400
+    let lastPast = readPastThreshold()
+    setShowScrollElement(lastPast)
+    let raf = 0
+    const flush = () => {
+      raf = 0
+      const next = readPastThreshold()
+      if (next !== lastPast) {
+        lastPast = next
+        setShowScrollElement(next)
       }
-    })
+    }
+    const onScroll = () => {
+      if (raf) return
+      raf = window.requestAnimationFrame(flush)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (raf) window.cancelAnimationFrame(raf)
+    }
   }, [frontMatter, pageTitle])
   return (
     <>
@@ -59,6 +73,7 @@ const Aside = ({ pageTitle, blockMap, frontMatter }) => {
         <TableOfContents
           blockMap={blockMap}
           pageTitle={pageTitle}
+          pageId={pageId}
           frontMatter={frontMatter}
           showScrollElement={showScrollElement}
         />

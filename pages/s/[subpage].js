@@ -8,7 +8,7 @@ import { getAllPagesInSpace, getPageBreadcrumbs, idToUuid, defaultMapPageUrl } f
 import Loading from '@/components/Loading'
 import NotFound from '@/components/NotFound'
 
-const Post = ({ post, blockMap }) => {
+const Post = ({ post, blockMap, pageId }) => {
   const router = useRouter()
   if (router.isFallback) {
     return (
@@ -19,7 +19,13 @@ const Post = ({ post, blockMap }) => {
     return <NotFound statusCode={404} />
   }
   return (
-    <Layout blockMap={blockMap} frontMatter={post} fullWidth={post.fullWidth} />
+    <Layout
+      blockMap={blockMap}
+      frontMatter={post}
+      fullWidth={post.fullWidth}
+      pageId={pageId}
+      subPage
+    />
   )
 }
 
@@ -93,14 +99,14 @@ export async function getStaticProps({ params: { subpage } }) {
   const allPosts = await getAllPosts({ onlyNewsletter: false })
   const posts = allPosts.filter((p) => p.source !== 'markdown')
 
-  let blockMap, post, breadcrumbs
+  let blockMap, post, breadcrumbs, activeCrumb, currentPageId
   try {
     blockMap = await getPostBlocks(subpage)
-    const id = idToUuid(subpage)
+    currentPageId = idToUuid(subpage)
 
-    breadcrumbs = getPageBreadcrumbs(blockMap, id)
+    breadcrumbs = getPageBreadcrumbs(blockMap, currentPageId)
     // breadcrumbs is ordered root→leaf (last element = active subpage)
-    const activeCrumb = breadcrumbs.at(-1)
+    activeCrumb = breadcrumbs.at(-1)
 
     // Walk leaf→root to find the nearest breadcrumb that matches a known post
     // (handles both direct subpages and deeply nested pages)
@@ -122,7 +128,7 @@ export async function getStaticProps({ params: { subpage } }) {
     }
   } catch (err) {
     console.error('Error fetching subpage:', err)
-    return { props: { post: null, blockMap: null } }
+    return { props: { post: null, blockMap: null, pageId: null } }
   }
 
   // Allow only pages in your own Notion workspace.
@@ -161,10 +167,10 @@ export async function getStaticProps({ params: { subpage } }) {
   }
 
   if (!pageAllowed(blockMap)) {
-    return { props: { post: null, blockMap: null } }
+    return { props: { post: null, blockMap: null, pageId: null } }
   } else {
     return {
-      props: { post, blockMap },
+      props: { post, blockMap, pageId: activeCrumb?.block?.id ?? currentPageId },
       revalidate: 1
     }
   }

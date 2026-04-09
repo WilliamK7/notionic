@@ -10,18 +10,19 @@ export async function getStaticProps() {
   const heros = await getAllPosts({ onlyHidden: true })
   const hero = heros.find((t) => t.slug === 'newsletter')
 
-  let blockMap
-  try {
-    blockMap = await getPostBlocks(hero.id)
-  } catch (err) {
-    console.error(err)
-    // return { props: { post: null, blockMap: null } }
+  let blockMap = null
+  if (hero) {
+    try {
+      blockMap = await getPostBlocks(hero.id)
+    } catch (err) {
+      console.error('[newsletter] Failed to fetch hero blockMap:', err)
+    }
   }
 
   return {
     props: {
       posts,
-      blockMap
+      blockMap: blockMap ?? null
     },
     revalidate: 1
   }
