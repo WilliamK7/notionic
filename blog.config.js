@@ -67,7 +67,7 @@ const BLOG = {
   },
   comment: {
     // support provider: utterances, supacomments, fuma
-    provider: 'fuma', // leave it empty if you don't need any comment plugin
+    provider: '', // leave it empty if you don't need any comment plugin
     supaCommentsConfig: {
       supabaseUrl: '', // The url of your Supabase instance
       supabaseAnonKey: '' // The anonymous key of your Supabase instance
